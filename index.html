@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Game List</title>
+<title>Activities</title>
 <style>
     body {
         background: #111;
@@ -54,7 +54,7 @@
 <div id="buttons">Loading…</div>
 
 <script>
-const url = "https://iphonegames.nekoweb.org/GameList.txt";
+const url = "/GameList.txt";
 let lines = [];
 
 // Load game list
@@ -103,7 +103,7 @@ function renderButtons(list) {
         // open ORIGINAL filename
         const encodedOriginal = encodeURIComponent(originalName.trim());
         btn.onclick = () => {
-            window.open(`https://iphonegames.nekoweb.org/gxmes/${encodedOriginal}`, "_blank");
+            window.open(`/activities/${encodedOriginal}`, "_blank");
         };
 
         box.appendChild(btn);
@@ -123,3 +123,4 @@ document.getElementById("searchBox").addEventListener("input", function () {
 
 </body>
 </html>
+
