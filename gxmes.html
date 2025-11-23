@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Game List</title>
+<style>
+    body {
+        background: #111;
+        font-family: Arial;
+        color: white;
+        padding: 20px;
+    }
+
+    #searchBox {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 15px;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #222;
+        color: white;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    #buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    button {
+        background: #222;
+        color: white;
+        border: 1px solid #444;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        white-space: nowrap;
+    }
+
+    button:hover {
+        background: #333;
+    }
+</style>
+</head>
+<body>
+
+<h2>Game List</h2>
+
+<input id="searchBox" type="text" placeholder="Search games...">
+
+<div id="buttons">Loading…</div>
+
+<script>
+const url = "https://iphonegames.nekoweb.org/GameList.txt";
+let lines = [];
+
+// Load game list
+fetch(url)
+  .then(r => r.text())
+  .then(text => {
+      lines = text.split("\n").filter(l => l.trim() !== "");
+      renderButtons(lines);
+  })
+  .catch(() => {
+      document.getElementById("buttons").innerHTML = "Error loading file.";
+  });
+
+// Clean visible button name
+function cleanName(original) {
+    let n = original.trim();
+
+    // remove .html
+    if (n.toLowerCase().endsWith(".html")) {
+        n = n.slice(0, -5);
+    }
+
+    // remove "cl" at start
+    if (n.toLowerCase().startsWith("cl")) {
+        n = n.slice(2);
+    }
+
+    // capitalize first letter
+    if (n.length > 0) {
+        n = n.charAt(0).toUpperCase() + n.slice(1);
+    }
+
+    return n;
+}
+
+// Render buttons
+function renderButtons(list) {
+    const box = document.getElementById("buttons");
+    box.innerHTML = "";
+    list.forEach(originalName => {
+        const clean = cleanName(originalName);
+
+        const btn = document.createElement("button");
+        btn.textContent = clean;
+
+        // open ORIGINAL filename
+        const encodedOriginal = encodeURIComponent(originalName.trim());
+        btn.onclick = () => {
+            window.open(`https://iphonegames.nekoweb.org/gxmes/${encodedOriginal}`, "_blank");
+        };
+
+        box.appendChild(btn);
+    });
+}
+
+// Search box
+document.getElementById("searchBox").addEventListener("input", function () {
+    const q = this.value.toLowerCase();
+    const filtered = lines.filter(l => {
+        const clean = cleanName(l).toLowerCase();
+        return clean.includes(q) || l.toLowerCase().includes(q);
+    });
+    renderButtons(filtered);
+});
+</script>
+
+</body>
+</html>
